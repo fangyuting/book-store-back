@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// npx prisma generate 生成 Prisma 客户端
+// yarn prisma db push 将model推送到数据库,建表
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型
+model Users {
+  id                  String    @id @default(uuid())
+  account             String    @unique // 账号
+  nickName            String    @default("") // 昵称
+  password            String // 密码
+  sex                 Int       @default(0) // 性别 0 男 1 女
+  age                 Int       @default(0) // 年龄
+  avatar              String    @default("") // 头像
+  status              Int       @default(0) // 状态 0 正常 1 冻结 2 注销
+  lastLoginTime       DateTime  @default(now())
+  Books               Books[]
+  buyerOrder          Order[]   @relation("buyer")
+  sellerOrder         Order[]   @relation("seller")
+  CampusCertification Int       @default(0) // 0 未认证 1 已认证
+  College             College[]
+}
+
+// 书籍模型
+model Books {
+  id         String @id @default(uuid())
+  owner      Users  @relation(fields: [ownerId], references: [id])
+  ownerId    String // 所有人
+  status     Int    @default(0) // 状态 0 代售 1 已售出
+  price      Float // 价格
+  desc       String // 书本描述信息
+  typeLevel1 String // 书本分类一级目录
+  typeLevel2 String // 书本分类二级目录
+}
+
+// 订单模型
+model Order {
+  id        String   @id @default(uuid())
+  buyerId   Users    @relation("buyer", fields: [buyer], references: [id])
+  buyer     String // 买房
+  sellerId  Users    @relation(name: "seller", fields: [seller], references: [id])
+  seller    String // 卖方
+  status    Int      @default(0) // 订单状态 0 未发货 1 已发货 2 已签收  3 已取消 4 已退款
+  orderTime DateTime @default(now()) // 下单时间
+}
+
+// 校园认证模型
+model College {
+  id        String @id @default(uuid())
+  user      Users  @relation(fields: [userId], references: [id])
+  userId    String
+  collegeId String
+}

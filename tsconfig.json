@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+      "module": "CommonJS",
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      // "target": "ES6",
+      "noImplicitAny": true,
+      "moduleResolution": "node",
+      "sourceMap": true,
+    "strict": true, 
+      "outDir": "./dist",
+      "baseUrl": "./",
+      "paths": {
+          "@/*": ["src/*"],
+          "*":["*","*.js","*.ts"]
+      },
+  },
+  "include": [
+      "src/**/*"
+  ],
+  "exclude": [
+      "node_modules/**/*"
+    ]
+}
+
+
