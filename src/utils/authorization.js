@@ -6,8 +6,7 @@ module.exports = {
   // 生成 token
   createToken(user) {
     // console.log('我来了');
-    console.log(SECRET_KEY);
-    return jwt.sign({ user }, SECRET_KEY, { expiresIn: '30s' });
+    return jwt.sign({ user }, SECRET_KEY, { expiresIn: '12h' });
   },
   checkToken(req, res, next) {
     try {

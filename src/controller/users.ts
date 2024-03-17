@@ -192,19 +192,6 @@ const updateUserInfo = async (req: UserInfoRequest<userInfoType>, res: Response)
   console.log('headers', req.headers);
   console.log(req.headers.authorization);
 
-  if (parseToken(req.headers.authorization) == null) {
-    return res.json({
-      status: 401,
-      data: [],
-      msg: 'Token 已过期'
-    });
-  } else if (parseToken(req.headers.authorization) == 'errToken') {
-    return res.json({
-      status: 401,
-      data: [],
-      msg: 'Token 无效'
-    });
-  }
   // 查找账户名account是否已存在
   const existingUser = await prisma.users.findUnique({
     where: {

@@ -8,11 +8,11 @@ const WHITE_LIST = [
   /**普通用户登录注册 */
   `/users/login`,
   `/users/register`,
-  `/users/getCVCode`,
-  /**根路径 */
-  `/`,
-  /**admin */
-  '/admin'
+  `/users/getCVCode`
+  // /**根路径 */
+  // `/`,
+  // /**admin */
+  // '/admin'
 ];
 
 module.exports = {

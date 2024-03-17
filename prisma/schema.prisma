@@ -14,43 +14,73 @@ datasource db {
 
 // 用户模型
 model Users {
-  id                  String    @id @default(uuid())
-  account             String    @unique // 账号
-  nickName            String    @default("") // 昵称
+  id                  String         @id @default(uuid())
+  account             String         @unique // 账号
+  nickName            String         @default("") // 昵称
   password            String // 密码
-  sex                 Int       @default(0) // 性别 0 男 1 女
-  age                 Int       @default(0) // 年龄
-  avatar              String    @default("") // 头像
-  status              Int       @default(0) // 状态 0 正常 1 冻结 2 注销
-  lastLoginTime       DateTime  @default(now())
+  sex                 Int            @default(0) // 性别 0 男 1 女
+  age                 Int            @default(0) // 年龄
+  avatar              String         @default("") // 头像
+  status              Int            @default(0) // 状态 0 正常 1 冻结 2 注销
+  lastLoginTime       DateTime       @default(now())
   Books               Books[]
-  buyerOrder          Order[]   @relation("buyer")
-  sellerOrder         Order[]   @relation("seller")
-  CampusCertification Int       @default(0) // 0 未认证 1 已认证
+  buyerOrder          Order[]        @relation("buyer")
+  sellerOrder         Order[]        @relation("seller")
+  CampusCertification Int            @default(0) // 0 未认证 1 已认证
   College             College[]
+  ownerId             ShoppingCart[] @relation("owner")
+  // Favorites           Favorites[]
+  favoritesOwnerId    Favorites[]    @relation("favoritesOwner")
 }
 
 // 书籍模型
 model Books {
-  id         String @id @default(uuid())
-  owner      Users  @relation(fields: [ownerId], references: [id])
-  ownerId    String // 所有人
-  status     Int    @default(0) // 状态 0 代售 1 已售出
-  price      Float // 价格
-  desc       String // 书本描述信息
-  typeLevel1 String // 书本分类一级目录
-  typeLevel2 String // 书本分类二级目录
+  id              String         @id @default(uuid())
+  bookTitle       String // 书籍名称
+  bookAuthor      String // 书籍作者
+  owner           Users          @relation(fields: [ownerId], references: [id])
+  ownerId         String // 所有人
+  status          Int            @default(0) // 状态 0 代售 1 已售出
+  originPrice     Float // 价格
+  currentPrice    Float // 价格
+  desc            String // 书本描述信息
+  typeLevel1      String // 书本分类一级目录
+  typeLevel2      String // 书本分类二级目录
+  bookImgPath     String
+  Order           Order[]
+  shopBook        ShoppingCart[] @relation("shopBook")
+  favoritesBookId Favorites[]    @relation("favoritesBook")
 }
 
 // 订单模型
 model Order {
   id        String   @id @default(uuid())
   buyerId   Users    @relation("buyer", fields: [buyer], references: [id])
-  buyer     String // 买房
-  sellerId  Users    @relation(name: "seller", fields: [seller], references: [id])
+  buyer     String // 买方
+  sellerId  Users    @relation("seller", fields: [seller], references: [id])
   seller    String // 卖方
   status    Int      @default(0) // 订单状态 0 未发货 1 已发货 2 已签收  3 已取消 4 已退款
   orderTime DateTime @default(now()) // 下单时间
+  booksId   String?
+  Books     Books?   @relation(fields: [booksId], references: [id])
+}
+
+// 购物车模型
+model ShoppingCart {
+  id         String @id @default(uuid())
+  ownerId    Users  @relation("owner", fields: [owner], references: [id])
+  owner      String
+  shopBookId Books  @relation("shopBook", fields: [shopBook], references: [id])
+  shopBook   String
+}
+
+// 收藏夹模型
+model Favorites {
+  id               String @id @default(uuid())
+  favoritesOwnerId Users  @relation("favoritesOwner", fields: [favoritesOwner], references: [id])
+  favoritesOwner   String
+  favoritesBookId  Books  @relation("favoritesBook", fields: [favoritesBook], references: [id])
+  favoritesBook    String
 }
 
 // 校园认证模型
