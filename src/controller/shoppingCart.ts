@@ -53,6 +53,7 @@ const addToShoppingCart = async (req: ShoppingCartRequest<ShoppingCartInfoType>,
   }
 };
 
+// 获取我的购物车
 const getMyShoppingCart = async (req: ShoppingCartRequest<ShoppingCartInfoType>, res: Response) => {
   const { owner } = req.query;
   const existingBooks = await prisma.shoppingCart.findMany({
@@ -87,11 +88,6 @@ const getMyShoppingCart = async (req: ShoppingCartRequest<ShoppingCartInfoType>,
       data: shoppingCartWithBooksInfo,
       msg: 'getMyFavorites success'
     });
-    // res.json({
-    //   status: 200,
-    //   data: existingBooks,
-    //   msg: 'getMyFavorites success'
-    // });
   } else {
     res.json({
       status: 201,
@@ -100,7 +96,34 @@ const getMyShoppingCart = async (req: ShoppingCartRequest<ShoppingCartInfoType>,
   }
 };
 
+const deleteShoppingCartBook = async (
+  req: ShoppingCartRequest<ShoppingCartInfoType>,
+  res: Response
+) => {
+  const { id, owner, shopBook } = req.body;
+  console.log('body', req.body);
+  const newShoppingCart = await prisma.shoppingCart.delete({
+    where: {
+      id,
+      owner,
+      shopBook
+    }
+  });
+  if (newShoppingCart) {
+    res.json({
+      status: 200,
+      msg: 'deleteShoppingCartBook success'
+    });
+  } else {
+    res.json({
+      status: 201,
+      msg: 'no Book Content'
+    });
+  }
+};
+
 module.exports = {
   addToShoppingCart,
-  getMyShoppingCart
+  getMyShoppingCart,
+  deleteShoppingCartBook
 };
